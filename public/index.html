@@ -21,7 +21,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
-    <title>lazy scrabble flashcard app</title>
+    <title>floe - a lazy scrabble flashcard app</title>
     <style>
         * {
             box-sizing: border-box;
@@ -45,7 +45,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             width: 100%;
             max-width: 550px;
             text-align: center;
-            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 20px 35px black;
             border: 1px solid #dccf9a;
         }
 
@@ -130,13 +130,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             font-weight: 500;
             cursor: pointer;
             flex: 2;
-            box-shadow: 0 3px 0 #1f3a1a;
+            box-shadow: 0 3px 0 black;
         }
 
         .auto-prev:active,
         .auto-next:active {
             transform: translateY(2px);
-            box-shadow: 0 1px 0 #1f3a1a;
+            box-shadow: 0 1px 0 black;
         }
 
         .nav-buttons {
@@ -179,7 +179,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             padding: 12px 20px;
             border-radius: 16px;
             cursor: pointer;
-            box-shadow: 0 3px 0 #1f3a1a;
+            box-shadow: 0 3px 0 black;
             transition: 0.05s linear;
             font-family: inherit;
             flex: 1;
@@ -187,7 +187,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
         button:active {
             transform: translateY(2px);
-            box-shadow: 0 1px 0 #1f3a1a;
+            box-shadow: 0 1px 0 black;
         }
 
         .random-btn {
@@ -209,12 +209,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             padding: 8px 0;
             width: 60px;
             margin: 0;
-            box-shadow: 0 2px 0 #5f4e2a;
+            box-shadow: 0 2px 0 black;
         }
 
         .len-btn.active {
             background: #2b6e1a;
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+            box-shadow: inset 0 1px 3px black;
             transform: translateY(1px);
         }
 
@@ -312,31 +312,47 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             margin-top: 16px;
         }
 
+        .speak-btn,
         .about-btn,
-        .change-log-btn {
+        .change-log-btn,
+        .debug-btn {
             font-size: 0.85rem;
             background: #3b6e2a;
             display: inline-block;
             text-align: center;
+            margin: 5px 0px;
             padding: 8px 16px;
             border-radius: 16px;
             color: white;
             font-weight: 500;
             cursor: pointer;
             flex: 1;
-            box-shadow: 0 3px 0 #1f3a1a;
+            box-shadow: 0 3px 0 black;
         }
 
         .about-btn:active,
         .change-log-btn:active {
             transform: translateY(2px);
-            box-shadow: 0 1px 0 #1f3a1a;
+            box-shadow: 0 1px 0 black;
         }
 
         .progress {
             font-size: 0.75rem;
             color: #8a7a4a;
             margin-top: 12px;
+        }
+
+        .speak-btn {
+            font-size: 0.85rem;
+            background: #3b6e2a;
+            display: inline-block;
+            text-align: center;
+            padding: 5px 16px;
+            border-radius: 16px;
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            width: 25%;
         }
 
         .about-btn {
@@ -349,7 +365,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             color: white;
             font-weight: 500;
             cursor: pointer;
-            width: 45%;
+            width: 25%;
         }
 
         .change-log-btn {
@@ -362,7 +378,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             color: white;
             font-weight: 500;
             cursor: pointer;
-            width: 45%;
+            width: 40%;
         }
 
         /* Modal styles */
@@ -386,7 +402,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             max-width: 400px;
             width: 90%;
             border: 2px solid #dccf9a;
-            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 20px 35px black;
         }
 
         .modal-content h3 {
@@ -411,13 +427,16 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
         .modal-footer {
             text-align: center;
         }
+
+        #logContent {
+            user-select: text;
+            -webkit-user-select: text;
+        }
     </style>
 </head>
 
 <body>
     <div class="app">
-        <br>
-
         <div class="rank-row">
             <div class="auto-prev" id="autoPrevBtn">◀ AUTO</div>
             <div class="rank" id="rankLabel">#---</div>
@@ -476,8 +495,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
         <hr>
 
         <div class="footer">
-            <button class="about-btn" id="aboutBtn">ABOUT</button>
+            <button class="speak-btn" id="speakBtn">SPEAK</button>
             <button class="change-log-btn" id="changeLogBtn">CHANGE LOG</button>
+            <button class="about-btn" id="aboutBtn">ABOUT</button>
+            <br>
+            <button class="debug-btn" id="debugBtn">DEBUG</button>
         </div>
 
         <br>
@@ -486,7 +508,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
     <div id="aboutModal" class="modal">
         <div class="modal-content">
             <h3>About</h3>
-            <p style="text-align: center;">com.jdx.scrabble.lazy | version 1.1.1</p>
+            <p style="text-align: center;">floe | version 1.2.0</p>
             <p style="text-align: center;">(name suggestions welcome!)</p>
             <p style="font-weight: 700;">Probability-ranked word study tool</p>
             <p>Current features:<br>
@@ -496,7 +518,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
                 • Anagram clusters<br>
                 • Front/back truncation indicators<br>
                 • Auto-scroll mode (5s interval)<br>
-                • Autosaves your place per word length</p>
+                • Autosaves your place per word length<br>
+                • Spelling reader (speak)</p>
             <p style="text-align: center;">Created by William Kang<br>
                 Aided by DeepSeek-V3.2</p>
             <p>This is free software under the GNU GPLv3.<br>
@@ -510,6 +533,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
     <div id="changeLogModal" class="modal">
         <div class="modal-content">
             <h3>Change Log</h3>
+            <p style="text-align: center;">version 1.2.0</p>
+            <p>• added spelling reader (speak)</p>
+            <hr>
             <p style="text-align: center;">version 1.1.1</p>
             <p>• applied GNU GPLv3 license<br>
                 • adjusted min/max probability functionality</p>
@@ -529,6 +555,19 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
                 • Autosaves your place per word length</p>
             <div class="modal-footer">
                 <button id="closeChangeLogBtn" class="modal-close">CLOSE</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="logModal" class="modal">
+        <div class="modal-content">
+            <h3>Debug Logs</h3>
+            <div id="logContent"
+                style="background: #2c4a2a; color: #fff7e8; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 0.8rem; max-height: 300px; overflow-y: auto; text-align: left; white-space: pre-wrap;">
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 16px;">
+                <button id="clearLogsBtn">CLEAR</button>
+                <button id="closeLogBtn">CLOSE</button>
             </div>
         </div>
     </div>
@@ -574,11 +613,27 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
         let currentList = [];
         let currentIndex = 0;
 
+        let speakMode = false;
+        let ttsReady = false;
+        let ttsAvailable = false;
+        let TextToSpeech = null;
+
         const STORAGE_KEY = 'scrabbleLazyState';
 
         // Auto-scroll variables
         let autoInterval = null;
         let autoDirection = null;
+
+        // Logging system
+        let logEntries = [];
+
+        const wordDisplay = document.getElementById("wordDisplay");
+        const rankLabel = document.getElementById("rankLabel");
+        const minRankInput = document.getElementById("minRankInput");
+        const maxRankInput = document.getElementById("maxRankInput");
+        const rankJumpInput = document.getElementById("rankJumpInput");
+        const wordJumpInput = document.getElementById("wordJumpInput");
+        const speakBtn = document.getElementById("speakBtn");
 
         function saveState() {
             const masterState = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
@@ -591,6 +646,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
                 currentMaxRank: currentMaxRank
             };
             masterState.lastActiveLength = currentLength;
+            masterState.lastSpeakMode = speakMode;
+            //addLog("speakMode saved: " + speakMode);
 
             localStorage.setItem(STORAGE_KEY, JSON.stringify(masterState));
         }
@@ -610,6 +667,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
                 });
             }
 
+            if (masterState.lastSpeakMode !== undefined) {
+                speakMode = masterState.lastSpeakMode;
+                speakBtn.style.background = speakMode ? "#3b6e2a" : "#eb3e3e";
+            }
+
             const saved = masterState[currentLength];
             if (saved) {
                 currentMinRank = saved.currentMinRank;
@@ -623,13 +685,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
             return true;
         }
-
-        const wordDisplay = document.getElementById("wordDisplay");
-        const rankLabel = document.getElementById("rankLabel");
-        const minRankInput = document.getElementById("minRankInput");
-        const maxRankInput = document.getElementById("maxRankInput");
-        const rankJumpInput = document.getElementById("rankJumpInput");
-        const wordJumpInput = document.getElementById("wordJumpInput");
 
         function buildCurrentList(resetIndex = true) {
             const fullList = wordsByLen[currentLength];
@@ -742,16 +797,17 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             }, 5000);
         }
 
-        function refreshWord() {
+        async function refreshWord() {
             const { word, rank, position, total } = getCurrentWord();
             wordDisplay.innerText = word;
             rankLabel.innerText = `#${rank}`;
             rankJumpInput.value = rank;
             updateAnagramIndicator();
             updateTruncationIndicators();
+            await speakSpelling(word);
         }
 
-        function randomWord() {
+        async function randomWord() {
             stopAuto();
             if (!currentList.length) buildCurrentList();
             const { word, rank, position, total } = getRandomWordFromList();
@@ -761,13 +817,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             rankJumpInput.value = rank;
             updateAnagramIndicator();
             updateTruncationIndicators();
+            await speakSpelling(word);
             saveState();
         }
 
-        function nextWord() {
+        async function nextWord() {
             //stopAuto();
             if (currentList.length === 0) {
-                refreshWord();
+                await refreshWord();
                 return;
             }
             if (currentIndex < currentList.length - 1) {
@@ -775,14 +832,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             } else {
                 currentIndex = 0;
             }
-            refreshWord();
+            await refreshWord();
             saveState();
         }
 
-        function prevWord() {
+        async function prevWord() {
             //stopAuto();
             if (currentList.length === 0) {
-                refreshWord();
+                await refreshWord();
                 return;
             }
             if (currentIndex > 0) {
@@ -790,7 +847,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             } else {
                 currentIndex = currentList.length - 1;
             }
-            refreshWord();
+            await refreshWord();
             saveState();
         }
 
@@ -882,7 +939,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
                     const filtered = lines.filter(w => w.length === length);
                     wordsByLen[length] = filtered;
                     wordsByLenSet[length] = new Set(filtered);
-                    console.log(`loaded ${filtered.length} words for length ${length}`);
+                    addLog(`loaded ${filtered.length} words for length ${length}`);
                     loadedCount++;
                     if (loadedCount === totalFiles) {
                         updateMaxProbLimit();
@@ -934,14 +991,25 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             document.getElementById("changeLogModal").style.display = "none";
         }
 
-        function init() {
+        async function init() {
             buildLengthButtons();
+            await checkTTS();
+
+            if (speakMode === true) {
+                speakBtn.style.background = "#3b6e2a";
+            } else {
+                speakBtn.style.background = "#eb3e3e";
+            }
 
             document.getElementById("prevBtn").addEventListener("click", () => prevWord());
             document.getElementById("nextBtn").addEventListener("click", () => nextWord());
             document.getElementById("randomBtn").addEventListener("click", () => randomWord());
             document.getElementById("jumpBtn").addEventListener("click", () => smartJump());
             document.getElementById("rangeBtn").addEventListener("click", () => updateFilters());
+
+            document.getElementById('debugBtn').addEventListener('click', showLogModal);
+            document.getElementById('closeLogBtn').addEventListener('click', closeLogModal);
+            document.getElementById('clearLogsBtn').addEventListener('click', clearLogs);
 
             document.getElementById("autoPrevBtn").addEventListener("click", () => {
                 if (autoDirection === 'prev') stopAuto();
@@ -973,6 +1041,25 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
                 if (e.key === "Enter") smartJump();
             });
 
+            document.getElementById("speakBtn").addEventListener("click", async () => {
+                if (speakMode === true) {
+                    speakMode = false;
+                    speakBtn.style.background = "#eb3e3e";
+                    if (TextToSpeech && TextToSpeech.stop) {
+                        await TextToSpeech.stop();
+                    } else {
+                        window.speechSynthesis.cancel();
+                    }
+                } else {
+                    speakMode = true;
+                    speakBtn.style.background = "#3b6e2a";
+                    const currentWord = wordDisplay.innerText;
+                    if (currentWord && currentWord !== "-" && currentWord !== "📖") {
+                        await speakSpelling(currentWord);
+                    }
+                }
+            });
+
             //minRankInput.addEventListener("input", updateFilters);
             //maxRankInput.addEventListener("input", updateFilters);
 
@@ -980,8 +1067,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
                 loadFile(parseInt(len), filename);
             }
 
-            wordDisplay.innerText = "📖";
-            rankLabel.innerText = "loading...";
+            wordDisplay.innerText = "-";
+            rankLabel.innerText = "-";
         }
 
         function alphagram(word) {
@@ -1098,6 +1185,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
                     wordJumpInput.style.borderColor = "#cbbf88";
                 }, 1000);
             }
+
+            saveState();
         }
 
         function smartJump() {
@@ -1145,6 +1234,127 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             currentMaxRank = currentMax;
 
             updateJumpLimits();
+        }
+
+        async function checkTTS() {
+            addLog('Checking TTS...');
+
+            if (window.Capacitor && window.Capacitor.isNativePlatform()) {
+                addLog(`Capacitor: ${!!window.Capacitor}`);
+                addLog(`Is native: ${window.Capacitor?.isNativePlatform()}`);
+
+                const plugin = window.Capacitor.Plugins?.SpeechSynthesis;
+                addLog(`SpeechSynthesis plugin found: ${!!plugin}`);
+
+                if (plugin) {
+                    TextToSpeech = plugin;
+                    addLog('Plugin assigned, initializing...');
+                    try {
+                        await TextToSpeech.initialize();
+                        addLog('TTS engine initialized successfully');
+
+                        // *** ADD THIS SMALL DELAY HERE ***
+                        // Give the native engine a moment to fully initialize.
+                        await new Promise(resolve => setTimeout(resolve, 200));
+                        // *********************************
+
+                        ttsReady = true;
+                        addLog('TTS engine is now ready.');
+                    } catch (e) {
+                        addLog(`TTS init error: ${e.message}`);
+                        ttsReady = false;
+                    }
+                    ttsAvailable = true;
+                    return;
+                }
+
+                try {
+                    const module = await import('@capgo/capacitor-speech-synthesis');
+                    TextToSpeech = module.SpeechSynthesis;
+                    await TextToSpeech.initialize();
+                    addLog('TTS initialized via import');
+                    ttsAvailable = true;
+                    ttsReady = true;
+                    addLog('TTS loaded via dynamic import');
+                } catch (e) {
+                    addLog(`TTS import failed: ${e.message}`);
+                    ttsAvailable = false;
+                    ttsReady = false;
+                }
+            } else {
+                addLog('Not in Capacitor native environment');
+                ttsAvailable = false;
+                ttsReady = false;
+                speakBtn.disabled = true;
+                speakMode = false;
+                saveState();
+            }
+        }
+
+        async function speakSpelling(word) {
+            if (!speakMode) return;
+            if (!word || word === "NO WORDS" || word === "-") return;
+            if (!ttsReady) {
+                addLog('TTS not ready yet, skipping');
+                return;
+            }
+
+            const spelling = word.split('').join(' ');
+
+            if (ttsAvailable && TextToSpeech) {
+                try {
+                    await TextToSpeech.speak({
+                        text: spelling,
+                        rate: 0.7,
+                        language: 'en-US'
+                    });
+                    addLog(`Speaking: ${spelling}`);
+                } catch (e) {
+                    addLog(`TTS error: ${e.message}`);
+                }
+            }
+        }
+
+        function addLog(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const entry = `[${timestamp}] ${message}`;
+            logEntries.push(entry);
+
+            // Update modal if open (without triggering any console logs)
+            const logContent = document.getElementById('logContent');
+            if (logContent && logContent.isConnected && logContent.innerText !== undefined) {
+                // Direct DOM manipulation without any logging
+                const currentText = logEntries.join('\n');
+                if (logContent.innerText !== currentText) {
+                    logContent.innerText = currentText;
+                    logContent.scrollTop = logContent.scrollHeight;
+                }
+            }
+        }
+
+        // Keep a separate function for console logging that won't recurse
+        function debugLog(message) {
+            if (typeof console !== 'undefined' && console.log) {
+                console.log(message);
+            }
+        }
+
+        function showLogModal() {
+            const logContent = document.getElementById('logContent');
+            logContent.innerText = logEntries.join('\n');
+            logContent.scrollTop = logContent.scrollHeight;
+            document.getElementById('logModal').style.display = 'flex';
+        }
+
+        function closeLogModal() {
+            document.getElementById('logModal').style.display = 'none';
+        }
+
+        function clearLogs() {
+            logEntries = [];
+            const logContent = document.getElementById('logContent');
+            if (logContent) logContent.innerText = '';
+            addLog('Logs cleared');
         }
 
         init();
