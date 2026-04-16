@@ -1,6 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<!--
+Copyright (C) 2026 William Kang
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+-->
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
@@ -97,23 +114,11 @@
             border-radius: 16px;
             color: #2b3a24;
             font-weight: 500;
-            width: 20%;
-        }
-
-        .auto-prev {
-            font-size: 0.85rem;
-            background: #3b6e2a;
-            display: inline-block;
+            flex: 1;
             text-align: center;
-            padding: 5px 16px;
-            border-radius: 16px;
-            color: white;
-            font-weight: 500;
-            cursor: pointer;
-            width: 35%;
-            box-shadow: 0 3px 0 #1f3a1a;
         }
 
+        .auto-prev,
         .auto-next {
             font-size: 0.85rem;
             background: #3b6e2a;
@@ -124,8 +129,14 @@
             color: white;
             font-weight: 500;
             cursor: pointer;
-            width: 35%;
+            flex: 2;
             box-shadow: 0 3px 0 #1f3a1a;
+        }
+
+        .auto-prev:active,
+        .auto-next:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #1f3a1a;
         }
 
         .nav-buttons {
@@ -207,17 +218,19 @@
             transform: translateY(1px);
         }
 
-        .range-controls {
+        .range-controls,
+        .jump-row {
             display: flex;
-            gap: 16px;
-            justify-content: center;
-            margin: 24px 0 8px;
-            flex-wrap: wrap;
+            gap: 12px;
+            align-items: flex-end;
+            margin: 16px 0 8px;
         }
 
-        .range-box {
+        .range-box,
+        .jump-box {
             flex: 1;
-            min-width: 100px;
+            min-width: 0;
+            /* prevents flex overflow */
         }
 
         .range-box label,
@@ -226,20 +239,57 @@
             color: #4a5b32;
             display: block;
             margin-bottom: 6px;
-            font-size: 0.8rem;
-            text-align: center;
+            font-size: 0.7rem;
+            text-align: left;
+        }
+
+        .rank-row {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 8px;
         }
 
         .rank-input {
             background: #fff3cf;
             border: 2px solid #cbbf88;
             padding: 10px;
-            font-size: 1.2rem;
+            font-size: 1rem;
             text-align: center;
             font-weight: bold;
             border-radius: 16px;
             width: 100%;
             font-family: monospace;
+            box-sizing: border-box;
+        }
+
+        .rank-input-jump {
+            background: #fff3cf;
+            border: 2px solid #cbbf88;
+            padding: 10px;
+            font-size: 1rem;
+            text-align: center;
+            font-weight: bold;
+            border-radius: 16px;
+            width: 100%;
+            font-family: monospace;
+            box-sizing: border-box;
+        }
+
+        .jump-go-btn {
+            flex: 0;
+            padding: 10px 20px;
+            margin-bottom: 0;
+            font-size: 1rem;
+        }
+
+        .range-btn {
+            background: #d68b2c;
+            flex: 0;
+            padding: 10px 20px;
+            margin-bottom: 0;
+            font-size: 1rem;
         }
 
         .reset-btn {
@@ -255,27 +305,38 @@
             margin-top: 28px;
         }
 
+        .footer-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 16px;
+        }
+
+        .about-btn,
+        .change-log-btn {
+            font-size: 0.85rem;
+            background: #3b6e2a;
+            display: inline-block;
+            text-align: center;
+            padding: 8px 16px;
+            border-radius: 16px;
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            flex: 1;
+            box-shadow: 0 3px 0 #1f3a1a;
+        }
+
+        .about-btn:active,
+        .change-log-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #1f3a1a;
+        }
+
         .progress {
             font-size: 0.75rem;
             color: #8a7a4a;
             margin-top: 12px;
-        }
-
-        .jump-row {
-            display: flex;
-            gap: 12px;
-            align-items: flex-end;
-            margin: 16px 0 8px;
-        }
-
-        .jump-box {
-            flex: 1;
-        }
-
-        .jump-go-btn {
-            flex: 0;
-            padding: 10px 20px;
-            margin-bottom: 0;
         }
 
         .about-btn {
@@ -358,9 +419,9 @@
         <br>
 
         <div class="rank-row">
-            <div class="auto-prev" id="autoPrevBtn">AUTO PREV</div>
+            <div class="auto-prev" id="autoPrevBtn">◀ AUTO</div>
             <div class="rank" id="rankLabel">#---</div>
-            <div class="auto-next" id="autoNextBtn">AUTO NEXT</div>
+            <div class="auto-next" id="autoNextBtn">AUTO ▶</div>
         </div>
 
         <div class="alphagram-indicator" id="alphagramIndicator"></div>
@@ -396,16 +457,17 @@
                 <label>MAX PROBABILITY</label>
                 <input type="number" id="maxRankInput" class="rank-input" value="999999" step="1" min="1">
             </div>
+            <button id="rangeBtn" class="range-btn">GO</button>
         </div>
 
         <div class="jump-row">
             <div class="jump-box">
                 <label>PROBABILITY RANK</label>
-                <input type="number" id="rankJumpInput" class="rank-input">
+                <input type="number" id="rankJumpInput" class="rank-input-jump">
             </div>
             <div class="jump-box">
                 <label>WORD</label>
-                <input type="text" id="wordJumpInput" class="rank-input">
+                <input type="text" id="wordJumpInput" class="rank-input-jump">
             </div>
             <button id="jumpBtn" class="jump-go-btn">GO</button>
         </div>
@@ -424,7 +486,7 @@
     <div id="aboutModal" class="modal">
         <div class="modal-content">
             <h3>About</h3>
-            <p style="text-align: center;">com.jdx.scrabble.lazy | version 1.1.0</p>
+            <p style="text-align: center;">com.jdx.scrabble.lazy | version 1.1.1</p>
             <p style="text-align: center;">(name suggestions welcome!)</p>
             <p style="font-weight: 700;">Probability-ranked word study tool</p>
             <p>Current features:<br>
@@ -434,8 +496,11 @@
                 • Anagram clusters<br>
                 • Front/back truncation indicators<br>
                 • Auto-scroll mode (5s interval)<br>
-                • Auto-saves your place per word length</p>
-            <p style="text-align: center;">Created by William Kang<br>Aided by DeepSeek-V3.2</p>
+                • Autosaves your place per word length</p>
+            <p style="text-align: center;">Created by William Kang<br>
+                Aided by DeepSeek-V3.2</p>
+            <p>This is free software under the GNU GPLv3.<br>
+                Source code: github.com/wmkan/scrabble-lazy</p>
             <div class="modal-footer">
                 <button id="closeAboutBtn" class="modal-close">CLOSE</button>
             </div>
@@ -445,19 +510,23 @@
     <div id="changeLogModal" class="modal">
         <div class="modal-content">
             <h3>Change Log</h3>
+            <p style="text-align: center;">version 1.1.1</p>
+            <p>• applied GNU GPLv3 license<br>
+                • adjusted min/max probability functionality</p>
+            <hr>
             <p style="text-align: center;">version 1.1.0</p>
             <p>• added 3s and 9s, CSW24<br>
                 • adjusted UI elements<br>
                 • added front/back truncation indicators<br>
-                • added auto-scroll mode (5s interval)<br>
-                <hr>
+                • added auto-scroll mode (5s interval)</p>
+            <hr>
             <p style="text-align: center;">version 1.0.0</p>
             <p>• First release<br>
                 • Words: 4-8 letters, CSW24<br>
                 • PREV/NEXT/RANDOM navigation<br>
                 • Jump by rank or word<br>
                 • Anagram clusters<br>
-                • Auto-saves your place per word length</p>
+                • Autosaves your place per word length</p>
             <div class="modal-footer">
                 <button id="closeChangeLogBtn" class="modal-close">CLOSE</button>
             </div>
@@ -872,6 +941,7 @@
             document.getElementById("nextBtn").addEventListener("click", () => nextWord());
             document.getElementById("randomBtn").addEventListener("click", () => randomWord());
             document.getElementById("jumpBtn").addEventListener("click", () => smartJump());
+            document.getElementById("rangeBtn").addEventListener("click", () => updateFilters());
 
             document.getElementById("autoPrevBtn").addEventListener("click", () => {
                 if (autoDirection === 'prev') stopAuto();
@@ -889,7 +959,6 @@
             document.getElementById("closeAboutBtn").addEventListener("click", closeAboutModal);
             document.getElementById("closeChangeLogBtn").addEventListener("click", closeChangeLogModal);
 
-
             window.addEventListener("click", (e) => {
                 const modal = document.getElementById("aboutModal");
                 if (e.target === modal) {
@@ -904,8 +973,8 @@
                 if (e.key === "Enter") smartJump();
             });
 
-            minRankInput.addEventListener("input", updateFilters);
-            maxRankInput.addEventListener("input", updateFilters);
+            //minRankInput.addEventListener("input", updateFilters);
+            //maxRankInput.addEventListener("input", updateFilters);
 
             for (const [len, filename] of Object.entries(WORD_FILES)) {
                 loadFile(parseInt(len), filename);
