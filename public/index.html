@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
+    <title>lazy scrabble flashcard app</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: #1a3a1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            padding: 16px;
+        }
+
+        .app {
+            background: #fdf6e3;
+            border-radius: 16px;
+            padding: 16px 16px;
+            width: 100%;
+            max-width: 550px;
+            text-align: center;
+            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.3);
+            border: 1px solid #dccf9a;
+        }
+
+        .word-row {
+            display: flex;
+            gap: 0px 8px;
+            justify-content: center;
+            margin: 0;
+        }
+
+        .word {
+            font-size: clamp(1.2rem, 6vw, 2rem);
+            font-weight: 800;
+            font-family: 'Courier New', monospace;
+            background: #fff7e8;
+            padding: 24px 8px;
+            border-radius: 16px;
+            margin: 8px 0;
+            letter-spacing: 2px;
+            color: #2c4a2a;
+            border: 1px solid #e0cf9a;
+            word-break: break-word;
+            text-align: center;
+            width: 70%;
+        }
+
+        .bt-indicator {
+            font-size: clamp(1.2rem, 6vw, 2rem);
+            font-weight: 800;
+            font-family: 'Courier New', monospace;
+            background: #fff7e8;
+            padding: 24px 8px;
+            border-radius: 16px;
+            margin: 8px 0;
+            letter-spacing: 2px;
+            color: #2c4a2a;
+            border: 1px solid #e0cf9a;
+            word-break: break-word;
+            text-align: center;
+            white-space: pre;
+            width: 15%;
+        }
+
+        .ft-indicator {
+            font-size: clamp(1.2rem, 6vw, 2rem);
+            font-weight: 800;
+            font-family: 'Courier New', monospace;
+            background: #fff7e8;
+            padding: 24px 8px;
+            border-radius: 16px;
+            margin: 8px 0;
+            letter-spacing: 2px;
+            color: #2c4a2a;
+            border: 1px solid #e0cf9a;
+            word-break: break-word;
+            text-align: center;
+            white-space: pre;
+            width: 15%;
+        }
+
+        .rank {
+            font-size: 0.85rem;
+            background: #dacb94;
+            display: inline-block;
+            padding: 5px 16px;
+            border-radius: 16px;
+            color: #2b3a24;
+            font-weight: 500;
+            width: 20%;
+        }
+
+        .auto-prev {
+            font-size: 0.85rem;
+            background: #3b6e2a;
+            display: inline-block;
+            text-align: center;
+            padding: 5px 16px;
+            border-radius: 16px;
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            width: 35%;
+            box-shadow: 0 3px 0 #1f3a1a;
+        }
+
+        .auto-next {
+            font-size: 0.85rem;
+            background: #3b6e2a;
+            display: inline-block;
+            text-align: center;
+            padding: 5px 16px;
+            border-radius: 16px;
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            width: 35%;
+            box-shadow: 0 3px 0 #1f3a1a;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin: 0;
+        }
+
+        .anagram-indicator {
+            font-size: 1rem;
+            color: #8a6e3a;
+            margin: 16px 0;
+            font-family: monospace;
+        }
+
+        .anagram-list {
+            font-size: 1rem;
+            color: #8a6e3a;
+            margin: 16px 0;
+            font-family: monospace;
+            min-height: 60px;
+        }
+
+        .alphagram-indicator {
+            font-size: 1.2rem;
+            color: #8a6e3a;
+            margin: 24px 0px 16px 0px;
+            letter-spacing: 1px;
+            font-family: monospace;
+            min-height: 24px;
+        }
+
+        button {
+            background: #3b6e2a;
+            border: none;
+            color: white;
+            font-weight: bold;
+            font-size: 1.3rem;
+            padding: 12px 20px;
+            border-radius: 16px;
+            cursor: pointer;
+            box-shadow: 0 3px 0 #1f3a1a;
+            transition: 0.05s linear;
+            font-family: inherit;
+            flex: 1;
+        }
+
+        button:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #1f3a1a;
+        }
+
+        .random-btn {
+            background: #d68b2c;
+            font-size: 1.3rem;
+        }
+
+        .length-row {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin: 20px 0 20px;
+            flex-wrap: wrap;
+        }
+
+        .len-btn {
+            background: #9e8b54;
+            font-size: 1.2rem;
+            padding: 8px 0;
+            width: 60px;
+            margin: 0;
+            box-shadow: 0 2px 0 #5f4e2a;
+        }
+
+        .len-btn.active {
+            background: #2b6e1a;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+            transform: translateY(1px);
+        }
+
+        .range-controls {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin: 24px 0 8px;
+            flex-wrap: wrap;
+        }
+
+        .range-box {
+            flex: 1;
+            min-width: 100px;
+        }
+
+        .range-box label,
+        .jump-box label {
+            font-weight: 600;
+            color: #4a5b32;
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+
+        .rank-input {
+            background: #fff3cf;
+            border: 2px solid #cbbf88;
+            padding: 10px;
+            font-size: 1.2rem;
+            text-align: center;
+            font-weight: bold;
+            border-radius: 16px;
+            width: 100%;
+            font-family: monospace;
+        }
+
+        .reset-btn {
+            background: #eb3e3e;
+            flex: 0;
+            padding: 10px 20px;
+            margin-bottom: 0;
+        }
+
+        .footer {
+            font-size: 0.7rem;
+            color: #7f6e40;
+            margin-top: 28px;
+        }
+
+        .progress {
+            font-size: 0.75rem;
+            color: #8a7a4a;
+            margin-top: 12px;
+        }
+
+        .jump-row {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+            margin: 16px 0 8px;
+        }
+
+        .jump-box {
+            flex: 1;
+        }
+
+        .jump-go-btn {
+            flex: 0;
+            padding: 10px 20px;
+            margin-bottom: 0;
+        }
+
+        .about-btn {
+            font-size: 0.85rem;
+            background: #3b6e2a;
+            display: inline-block;
+            text-align: center;
+            padding: 5px 16px;
+            border-radius: 16px;
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            width: 45%;
+        }
+
+        .change-log-btn {
+            font-size: 0.85rem;
+            background: #3b6e2a;
+            display: inline-block;
+            text-align: center;
+            padding: 5px 16px;
+            border-radius: 16px;
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            width: 45%;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #fdf6e3;
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 400px;
+            width: 90%;
+            border: 2px solid #dccf9a;
+            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-content h3 {
+            margin-top: 0;
+            color: #2c4a2a;
+            text-align: center;
+        }
+
+        .modal-content p {
+            color: #4a5b32;
+            font-family: monospace;
+            line-height: 1.5;
+        }
+
+        .modal-close {
+            background: #3b6e2a;
+            padding: 8px 20px;
+            margin-top: 16px;
+            font-size: 1rem;
+        }
+
+        .modal-footer {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <br>
+
+        <div class="rank-row">
+            <div class="auto-prev" id="autoPrevBtn">AUTO PREV</div>
+            <div class="rank" id="rankLabel">#---</div>
+            <div class="auto-next" id="autoNextBtn">AUTO NEXT</div>
+        </div>
+
+        <div class="alphagram-indicator" id="alphagramIndicator"></div>
+
+        <div class="word-row">
+            <div class="ft-indicator" id="ftIndicator"> </div>
+            <div class="word" id="wordDisplay">—</div>
+            <div class="bt-indicator" id="btIndicator"> </div>
+        </div>
+
+        <div class="anagram-indicator" id="anagramIndicator"></div>
+        <div class="anagram-list" id="anagramList"></div>
+
+        <hr>
+
+        <div class="length-row" id="lengthButtons"></div>
+
+        <div class="nav-buttons">
+            <button id="prevBtn">◀</button>
+            <button id="randomBtn" class="random-btn">RANDOM</button>
+            <button id="nextBtn">▶</button>
+        </div>
+
+        <br>
+        <hr>
+
+        <div class="range-controls">
+            <div class="range-box">
+                <label>MIN PROBABILITY</label>
+                <input type="number" id="minRankInput" class="rank-input" value="1" step="1" min="1">
+            </div>
+            <div class="range-box">
+                <label>MAX PROBABILITY</label>
+                <input type="number" id="maxRankInput" class="rank-input" value="999999" step="1" min="1">
+            </div>
+        </div>
+
+        <div class="jump-row">
+            <div class="jump-box">
+                <label>PROBABILITY RANK</label>
+                <input type="number" id="rankJumpInput" class="rank-input">
+            </div>
+            <div class="jump-box">
+                <label>WORD</label>
+                <input type="text" id="wordJumpInput" class="rank-input">
+            </div>
+            <button id="jumpBtn" class="jump-go-btn">GO</button>
+        </div>
+
+        <br>
+        <hr>
+
+        <div class="footer">
+            <button class="about-btn" id="aboutBtn">ABOUT</button>
+            <button class="change-log-btn" id="changeLogBtn">CHANGE LOG</button>
+        </div>
+
+        <br>
+    </div>
+
+    <div id="aboutModal" class="modal">
+        <div class="modal-content">
+            <h3>About</h3>
+            <p style="text-align: center;">com.jdx.scrabble.lazy | version 1.1.0</p>
+            <p style="text-align: center;">(name suggestions welcome!)</p>
+            <p style="font-weight: 700;">Probability-ranked word study tool</p>
+            <p>Current features:<br>
+                • Words: 3-9 letters, CSW24<br>
+                • PREV/NEXT/RANDOM navigation<br>
+                • Jump by rank or word<br>
+                • Anagram clusters<br>
+                • Front/back truncation indicators<br>
+                • Auto-scroll mode (5s interval)<br>
+                • Auto-saves your place per word length</p>
+            <p style="text-align: center;">Created by William Kang<br>Aided by DeepSeek-V3.2</p>
+            <div class="modal-footer">
+                <button id="closeAboutBtn" class="modal-close">CLOSE</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="changeLogModal" class="modal">
+        <div class="modal-content">
+            <h3>Change Log</h3>
+            <p style="text-align: center;">version 1.1.0</p>
+            <p>• added 3s and 9s, CSW24<br>
+                • adjusted UI elements<br>
+                • added front/back truncation indicators<br>
+                • added auto-scroll mode (5s interval)<br>
+                <hr>
+            <p style="text-align: center;">version 1.0.0</p>
+            <p>• First release<br>
+                • Words: 4-8 letters, CSW24<br>
+                • PREV/NEXT/RANDOM navigation<br>
+                • Jump by rank or word<br>
+                • Anagram clusters<br>
+                • Auto-saves your place per word length</p>
+            <div class="modal-footer">
+                <button id="closeChangeLogBtn" class="modal-close">CLOSE</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const WORD_FILES = {
+            3: "3s.txt",
+            4: "4s.txt",
+            5: "5s.txt",
+            6: "6s.txt",
+            7: "7s.txt",
+            8: "8s.txt",
+            9: "9s.txt"
+        };
+
+        let wordsByLen = {
+            3: [],
+            4: [],
+            5: [],
+            6: [],
+            7: [],
+            8: [],
+            9: []
+        };
+
+        let wordsByLenSet = {
+            3: new Set(),
+            4: new Set(),
+            5: new Set(),
+            6: new Set(),
+            7: new Set(),
+            8: new Set(),
+            9: new Set()
+        };
+
+        let loadedCount = 0;
+        const totalFiles = Object.keys(WORD_FILES).length;
+
+        let currentLength = 7;
+        let currentMinRank = 1;
+        let currentMaxRank = 999999;
+
+        let currentList = [];
+        let currentIndex = 0;
+
+        const STORAGE_KEY = 'scrabbleLazyState';
+
+        // Auto-scroll variables
+        let autoInterval = null;
+        let autoDirection = null;
+
+        function saveState() {
+            const masterState = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+
+            const currentWord = currentList[currentIndex] || "";
+
+            masterState[currentLength] = {
+                currentWord: currentWord,
+                currentMinRank: currentMinRank,
+                currentMaxRank: currentMaxRank
+            };
+            masterState.lastActiveLength = currentLength;
+
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(masterState));
+        }
+
+        function loadState() {
+            const masterState = JSON.parse(localStorage.getItem(STORAGE_KEY));
+            if (!masterState) return false;
+
+            if (masterState.lastActiveLength) {
+                currentLength = masterState.lastActiveLength;
+                document.querySelectorAll(".len-btn").forEach(btn => {
+                    if (parseInt(btn.innerText) === currentLength) {
+                        btn.classList.add("active");
+                    } else {
+                        btn.classList.remove("active");
+                    }
+                });
+            }
+
+            const saved = masterState[currentLength];
+            if (saved) {
+                currentMinRank = saved.currentMinRank;
+                currentMaxRank = saved.currentMaxRank;
+
+                minRankInput.value = currentMinRank;
+                maxRankInput.value = currentMaxRank;
+
+                window._pendingWord = saved.currentWord;
+            }
+
+            return true;
+        }
+
+        const wordDisplay = document.getElementById("wordDisplay");
+        const rankLabel = document.getElementById("rankLabel");
+        const minRankInput = document.getElementById("minRankInput");
+        const maxRankInput = document.getElementById("maxRankInput");
+        const rankJumpInput = document.getElementById("rankJumpInput");
+        const wordJumpInput = document.getElementById("wordJumpInput");
+
+        function buildCurrentList(resetIndex = true) {
+            const fullList = wordsByLen[currentLength];
+            if (!fullList || fullList.length === 0) {
+                currentList = [];
+                return [];
+            }
+
+            let start = Math.max(0, currentMinRank - 1);
+            let end = Math.min(currentMaxRank, fullList.length);
+
+            if (start >= end || start < 0 || end <= 0) {
+                start = 0;
+                end = fullList.length;
+            }
+
+            currentList = fullList.slice(start, end);
+
+            if (resetIndex) {
+                currentIndex = 0;
+            } else {
+                if (currentIndex >= currentList.length || currentIndex < 0) {
+                    currentIndex = 0;
+                }
+            }
+            return currentList;
+        }
+
+        function getCurrentWord() {
+            if (!currentList.length) {
+                buildCurrentList();
+            }
+            if (currentList.length === 0) {
+                return { word: "NO WORDS", rank: 0, position: 0, total: 0 };
+            }
+            const word = currentList[currentIndex];
+            const rank = wordsByLen[currentLength].indexOf(word) + 1;
+            return {
+                word: word.toUpperCase(),
+                rank: rank,
+                position: currentIndex + 1,
+                total: currentList.length
+            };
+        }
+
+        function getRandomWordFromList() {
+            if (!currentList.length) {
+                buildCurrentList();
+            }
+            if (currentList.length === 0) {
+                return { word: "NO WORDS", rank: 0, position: 0, total: 0 };
+            }
+            const randomIndex = Math.floor(Math.random() * currentList.length);
+            const word = currentList[randomIndex];
+            const rank = wordsByLen[currentLength].indexOf(word) + 1;
+            return {
+                word: word.toUpperCase(),
+                rank: rank,
+                position: randomIndex + 1,
+                total: currentList.length
+            };
+        }
+
+        function updateTruncationIndicators() {
+            const currentWordObj = getCurrentWord();
+            const currentWord = currentWordObj.word;
+            if (!currentWord || currentWord === "NO WORDS") {
+                document.getElementById("ftIndicator").innerText = " ";
+                document.getElementById("btIndicator").innerText = " ";
+                return;
+            }
+
+            const frontCut = currentWord.slice(1);
+            const backCut = currentWord.slice(0, -1);
+            const targetLength = currentLength - 1;
+
+            if (targetLength >= 3 && targetLength <= 9 && wordsByLen[targetLength]) {
+                const targetList = wordsByLen[targetLength];
+                const frontValid = wordsByLenSet[targetLength].has(frontCut);
+                const backValid = wordsByLenSet[targetLength].has(backCut);
+
+                document.getElementById("ftIndicator").innerText = frontValid ? "-" : " ";
+                document.getElementById("btIndicator").innerText = backValid ? "-" : " ";
+            } else {
+                document.getElementById("ftIndicator").innerText = " ";
+                document.getElementById("btIndicator").innerText = " ";
+            }
+        }
+
+        function stopAuto() {
+            if (autoInterval) {
+                clearInterval(autoInterval);
+                autoInterval = null;
+            }
+            autoDirection = null;
+            document.getElementById("autoPrevBtn").style.opacity = '1';
+            document.getElementById("autoNextBtn").style.opacity = '1';
+        }
+
+        function startAuto(direction) {
+            stopAuto();
+            autoDirection = direction;
+
+            document.getElementById("autoPrevBtn").style.opacity = direction === 'prev' ? '0.7' : '1';
+            document.getElementById("autoNextBtn").style.opacity = direction === 'next' ? '0.7' : '1';
+
+            autoInterval = setInterval(() => {
+                if (direction === 'next') nextWord();
+                else prevWord();
+            }, 5000);
+        }
+
+        function refreshWord() {
+            const { word, rank, position, total } = getCurrentWord();
+            wordDisplay.innerText = word;
+            rankLabel.innerText = `#${rank}`;
+            rankJumpInput.value = rank;
+            updateAnagramIndicator();
+            updateTruncationIndicators();
+        }
+
+        function randomWord() {
+            stopAuto();
+            if (!currentList.length) buildCurrentList();
+            const { word, rank, position, total } = getRandomWordFromList();
+            wordDisplay.innerText = word;
+            rankLabel.innerText = `#${rank}`;
+            currentIndex = position - 1;
+            rankJumpInput.value = rank;
+            updateAnagramIndicator();
+            updateTruncationIndicators();
+            saveState();
+        }
+
+        function nextWord() {
+            //stopAuto();
+            if (currentList.length === 0) {
+                refreshWord();
+                return;
+            }
+            if (currentIndex < currentList.length - 1) {
+                currentIndex++;
+            } else {
+                currentIndex = 0;
+            }
+            refreshWord();
+            saveState();
+        }
+
+        function prevWord() {
+            //stopAuto();
+            if (currentList.length === 0) {
+                refreshWord();
+                return;
+            }
+            if (currentIndex > 0) {
+                currentIndex--;
+            } else {
+                currentIndex = currentList.length - 1;
+            }
+            refreshWord();
+            saveState();
+        }
+
+        function updateFilters() {
+            let minVal = parseInt(minRankInput.value);
+            let maxVal = parseInt(maxRankInput.value);
+
+            if (isNaN(minVal) || minVal < 1) minVal = 1;
+            if (isNaN(maxVal) || maxVal < 1) maxVal = 999999;
+
+            if (minVal > maxVal) {
+                [minVal, maxVal] = [maxVal, minVal];
+                minRankInput.value = minVal;
+                maxRankInput.value = maxVal;
+            }
+
+            currentMinRank = minVal;
+            currentMaxRank = maxVal;
+
+            updateJumpLimits();
+            buildCurrentList();
+            refreshWord();
+            saveState();
+        }
+
+        function setLength(length) {
+            if (length === currentLength) return;
+
+            stopAuto();
+            saveState();
+
+            currentLength = length;
+
+            const masterState = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+            const saved = masterState[currentLength];
+
+            if (saved && saved.currentWord) {
+                currentMinRank = saved.currentMinRank;
+                currentMaxRank = saved.currentMaxRank;
+                minRankInput.value = currentMinRank;
+                maxRankInput.value = currentMaxRank;
+
+                updateMaxProbLimit();
+                updateJumpLimits();
+                buildCurrentList();
+
+                jumpToWord(saved.currentWord);
+            } else {
+                currentMinRank = 1;
+                currentMaxRank = wordsByLen[currentLength]?.length || 999999;
+                minRankInput.value = currentMinRank;
+                maxRankInput.value = currentMaxRank;
+
+                updateMaxProbLimit();
+                updateJumpLimits();
+                buildCurrentList(true);
+                refreshWord();
+            }
+
+            saveState();
+        }
+
+        function buildLengthButtons() {
+            const container = document.getElementById("lengthButtons");
+            container.innerHTML = "";
+            const lengths = [3, 4, 5, 6, 7, 8, 9];
+            lengths.forEach(len => {
+                const btn = document.createElement("button");
+                btn.innerText = `${len}`;
+                btn.classList.add("len-btn");
+                if (len === currentLength) btn.classList.add("active");
+                btn.addEventListener("click", () => {
+                    document.querySelectorAll(".len-btn").forEach(b => b.classList.remove("active"));
+                    btn.classList.add("active");
+                    setLength(len);
+                });
+                container.appendChild(btn);
+            });
+        }
+
+        function loadFile(length, url) {
+            fetch(url)
+                .then(res => {
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    return res.text();
+                })
+                .then(text => {
+                    const lines = text.split(/\r?\n/).filter(line => line.trim().length > 0);
+                    const filtered = lines.filter(w => w.length === length);
+                    wordsByLen[length] = filtered;
+                    wordsByLenSet[length] = new Set(filtered);
+                    console.log(`loaded ${filtered.length} words for length ${length}`);
+                    loadedCount++;
+                    if (loadedCount === totalFiles) {
+                        updateMaxProbLimit();
+
+                        const hasSavedState = loadState();
+
+                        if (hasSavedState && window._pendingWord) {
+                            jumpToWord(window._pendingWord);
+                            delete window._pendingWord;
+                        } else {
+                            buildCurrentList(true);
+                            refreshWord();
+                        }
+                    }
+                })
+                .catch(err => {
+                    console.error(`failed to load ${url}:`, err);
+                    wordsByLen[length] = [];
+                    loadedCount++;
+                    if (loadedCount === totalFiles) {
+                        updateMaxProbLimit();
+
+                        const hasSavedState = loadState();
+
+                        if (hasSavedState && window._pendingWord) {
+                            jumpToWord(window._pendingWord);
+                            delete window._pendingWord;
+                        } else {
+                            buildCurrentList(true);
+                            refreshWord();
+                        }
+                    }
+                });
+        }
+
+        function showAboutModal() {
+            document.getElementById("aboutModal").style.display = "flex";
+        }
+
+        function closeAboutModal() {
+            document.getElementById("aboutModal").style.display = "none";
+        }
+
+        function showChangeLogModal() {
+            document.getElementById("changeLogModal").style.display = "flex";
+        }
+
+        function closeChangeLogModal() {
+            document.getElementById("changeLogModal").style.display = "none";
+        }
+
+        function init() {
+            buildLengthButtons();
+
+            document.getElementById("prevBtn").addEventListener("click", () => prevWord());
+            document.getElementById("nextBtn").addEventListener("click", () => nextWord());
+            document.getElementById("randomBtn").addEventListener("click", () => randomWord());
+            document.getElementById("jumpBtn").addEventListener("click", () => smartJump());
+
+            document.getElementById("autoPrevBtn").addEventListener("click", () => {
+                if (autoDirection === 'prev') stopAuto();
+                else startAuto('prev');
+            });
+
+            document.getElementById("autoNextBtn").addEventListener("click", () => {
+                if (autoDirection === 'next') stopAuto();
+                else startAuto('next');
+            });
+
+            document.getElementById("aboutBtn").addEventListener("click", showAboutModal);
+            document.getElementById("changeLogBtn").addEventListener("click", showChangeLogModal);
+
+            document.getElementById("closeAboutBtn").addEventListener("click", closeAboutModal);
+            document.getElementById("closeChangeLogBtn").addEventListener("click", closeChangeLogModal);
+
+
+            window.addEventListener("click", (e) => {
+                const modal = document.getElementById("aboutModal");
+                if (e.target === modal) {
+                    closeAboutModal();
+                }
+            });
+
+            rankJumpInput.addEventListener("keypress", (e) => {
+                if (e.key === "Enter") smartJump();
+            });
+            wordJumpInput.addEventListener("keypress", (e) => {
+                if (e.key === "Enter") smartJump();
+            });
+
+            minRankInput.addEventListener("input", updateFilters);
+            maxRankInput.addEventListener("input", updateFilters);
+
+            for (const [len, filename] of Object.entries(WORD_FILES)) {
+                loadFile(parseInt(len), filename);
+            }
+
+            wordDisplay.innerText = "📖";
+            rankLabel.innerText = "loading...";
+        }
+
+        function alphagram(word) {
+            return word.toUpperCase().split('').sort().join('');
+        }
+
+        function updateAnagramIndicator() {
+            const fullList = wordsByLen[currentLength];
+            if (!fullList || fullList.length === 0) return;
+
+            var anagramCount = 0;
+
+            const currentWordObj = getCurrentWord();
+            const currentWord = currentWordObj.word.toUpperCase();
+            const currentRank = currentWordObj.rank;
+            const idx = currentRank - 1;
+
+            const targetAlpha = alphagram(currentWord);
+
+            let leftWords = [];
+            let leftIdx = idx - 1;
+            while (leftIdx >= 0 && alphagram(fullList[leftIdx]) === targetAlpha) {
+                leftWords.unshift(fullList[leftIdx].toUpperCase());
+                leftIdx--;
+                anagramCount++;
+            }
+
+            let rightWords = [];
+            let rightIdx = idx + 1;
+            while (rightIdx < fullList.length && alphagram(fullList[rightIdx]) === targetAlpha) {
+                rightWords.push(fullList[rightIdx].toUpperCase());
+                rightIdx++;
+                anagramCount++;
+            }
+
+            let indicator = '';
+            let anlist = '';
+            if (leftWords.length === 0 && rightWords.length === 0) {
+                indicator = 'unique';
+            } else {
+                const allAnagrams = [...leftWords, ...rightWords];
+                if (anagramCount === 1) {
+                    indicator = `has ${anagramCount} anagram`;
+                    anlist = `${allAnagrams.join(', ')}`;
+                } else {
+                    indicator = `has ${anagramCount} anagrams`;
+                    anlist = `${allAnagrams.join(', ')}`;
+                }
+            }
+
+            let alph = '';
+            alph = `${targetAlpha}`;
+
+            document.getElementById("alphagramIndicator").innerText = alph;
+            document.getElementById("anagramIndicator").innerText = indicator;
+            document.getElementById("anagramList").innerText = anlist;
+        }
+
+        function jumpToRank(targetRank) {
+            stopAuto();
+            const fullList = wordsByLen[currentLength];
+            if (!fullList || fullList.length === 0) return;
+
+            targetRank = Math.min(targetRank, fullList.length);
+            if (targetRank < 1) targetRank = 1;
+
+            if (targetRank < currentMinRank || targetRank > currentMaxRank) {
+                currentMinRank = Math.min(currentMinRank, targetRank);
+                currentMaxRank = Math.max(currentMaxRank, targetRank);
+                minRankInput.value = currentMinRank;
+                maxRankInput.value = currentMaxRank;
+                buildCurrentList();
+            }
+
+            const targetWord = fullList[targetRank - 1];
+            const listIndex = currentList.indexOf(targetWord);
+
+            if (listIndex !== -1) {
+                currentIndex = listIndex;
+                refreshWord();
+                wordJumpInput.value = '';
+            } else {
+                buildCurrentList();
+                jumpToRank(targetRank);
+            }
+
+            saveState();
+        }
+
+        function jumpToWord(targetWord) {
+            stopAuto();
+            const fullList = wordsByLen[currentLength];
+            if (!fullList || fullList.length === 0) return;
+
+            const upperWord = targetWord.toUpperCase();
+
+            if (!wordsByLenSet[currentLength].has(upperWord)) {
+                return;
+            }
+
+            const index = fullList.indexOf(upperWord);
+
+            if (index !== -1) {
+                const rank = index + 1;
+                rankJumpInput.value = rank;
+                jumpToRank(rank);
+                wordJumpInput.style.borderColor = "#3b6e2a";
+                setTimeout(() => {
+                    wordJumpInput.style.borderColor = "#cbbf88";
+                }, 500);
+            } else {
+                wordJumpInput.style.borderColor = "#d68b2c";
+                setTimeout(() => {
+                    wordJumpInput.style.borderColor = "#cbbf88";
+                }, 1000);
+            }
+        }
+
+        function smartJump() {
+            const rankValue = rankJumpInput.value.trim();
+            const wordValue = wordJumpInput.value.trim();
+
+            if (wordValue) {
+                jumpToWord(wordValue);
+                return;
+            }
+
+            if (rankValue && /^\d+$/.test(rankValue)) {
+                const rank = parseInt(rankValue);
+                jumpToRank(rank);
+                return;
+            }
+        }
+
+        function updateJumpLimits() {
+            const minVal = parseInt(minRankInput.value) || 1;
+            const maxVal = parseInt(maxRankInput.value) || 1;
+
+            rankJumpInput.min = minVal;
+            rankJumpInput.max = maxVal;
+
+            let currentJump = parseInt(rankJumpInput.value);
+            if (isNaN(currentJump)) currentJump = minVal;
+            if (currentJump < minVal) rankJumpInput.value = minVal;
+            if (currentJump > maxVal) rankJumpInput.value = maxVal;
+        }
+
+        function updateMaxProbLimit() {
+            const fullList = wordsByLen[currentLength];
+            if (!fullList || fullList.length === 0) return;
+
+            const maxPossible = fullList.length;
+            maxRankInput.max = maxPossible;
+
+            let currentMax = parseInt(maxRankInput.value);
+            if (isNaN(currentMax) || currentMax > maxPossible) {
+                maxRankInput.value = maxPossible;
+                currentMax = maxPossible;
+            }
+
+            currentMaxRank = currentMax;
+
+            updateJumpLimits();
+        }
+
+        init();
+    </script>
+</body>
+
+</html>
