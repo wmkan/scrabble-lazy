@@ -59,7 +59,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
         .word {
             font-size: clamp(1.2rem, 6vw, 2rem);
             font-weight: 800;
-            font-family: 'Courier New', monospace;
+            font-family: 'Roboto Mono', monospace;
             background: #fff7e8;
             padding: 24px 8px;
             border-radius: 16px;
@@ -75,7 +75,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
         .bt-indicator {
             font-size: clamp(1.2rem, 6vw, 2rem);
             font-weight: 800;
-            font-family: 'Courier New', monospace;
+            font-family: 'Roboto Mono', monospace;
             background: #fff7e8;
             padding: 24px 8px;
             border-radius: 16px;
@@ -92,7 +92,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
         .ft-indicator {
             font-size: clamp(1.2rem, 6vw, 2rem);
             font-weight: 800;
-            font-family: 'Courier New', monospace;
+            font-family: 'Roboto Mono', monospace;
             background: #fff7e8;
             padding: 24px 8px;
             border-radius: 16px;
@@ -292,13 +292,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             font-size: 1rem;
         }
 
-        .reset-btn {
-            background: #eb3e3e;
-            flex: 0;
-            padding: 10px 20px;
-            margin-bottom: 0;
-        }
-
         .footer {
             font-size: 0.7rem;
             color: #7f6e40;
@@ -315,7 +308,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
         .speak-btn,
         .about-btn,
         .change-log-btn,
-        .debug-btn {
+        .debug-btn,
+        .options-btn {
             font-size: 0.85rem;
             background: #3b6e2a;
             display: inline-block;
@@ -328,57 +322,35 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             cursor: pointer;
             flex: 1;
             box-shadow: 0 3px 0 black;
+            width: 40%;
         }
 
         .about-btn:active,
-        .change-log-btn:active {
+        .change-log-btn:active,
+        .speak-btn:active,
+        .debug-btn:active,
+        .options-btn:active {
             transform: translateY(2px);
             box-shadow: 0 1px 0 black;
+        }
+
+        .options-input {
+            background: #fff3cf;
+            border: 1px solid #cbbf88;
+            padding: 5px;
+            font-size: 1rem;
+            text-align: center;
+            font-weight: bold;
+            border-radius: 8px;
+            width: 80%;
+            font-family: monospace;
+            box-sizing: border-box;
         }
 
         .progress {
             font-size: 0.75rem;
             color: #8a7a4a;
             margin-top: 12px;
-        }
-
-        .speak-btn {
-            font-size: 0.85rem;
-            background: #3b6e2a;
-            display: inline-block;
-            text-align: center;
-            padding: 5px 16px;
-            border-radius: 16px;
-            color: white;
-            font-weight: 500;
-            cursor: pointer;
-            width: 25%;
-        }
-
-        .about-btn {
-            font-size: 0.85rem;
-            background: #3b6e2a;
-            display: inline-block;
-            text-align: center;
-            padding: 5px 16px;
-            border-radius: 16px;
-            color: white;
-            font-weight: 500;
-            cursor: pointer;
-            width: 25%;
-        }
-
-        .change-log-btn {
-            font-size: 0.85rem;
-            background: #3b6e2a;
-            display: inline-block;
-            text-align: center;
-            padding: 5px 16px;
-            border-radius: 16px;
-            color: white;
-            font-weight: 500;
-            cursor: pointer;
-            width: 40%;
         }
 
         /* Modal styles */
@@ -393,6 +365,19 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             justify-content: center;
             align-items: center;
             z-index: 1000;
+        }
+
+        .modal-sub {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1100;
         }
 
         .modal-content {
@@ -496,30 +481,26 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
         <div class="footer">
             <button class="speak-btn" id="speakBtn">SPEAK</button>
-            <button class="change-log-btn" id="changeLogBtn">CHANGE LOG</button>
-            <button class="about-btn" id="aboutBtn">ABOUT</button>
-            <br>
-            <button class="debug-btn" id="debugBtn">DEBUG</button>
+            <button class="options-btn" id="optionsBtn">OPTIONS</button>
         </div>
 
         <br>
     </div>
 
-    <div id="aboutModal" class="modal">
+    <div id="aboutModal" class="modal-sub">
         <div class="modal-content">
-            <h3>About</h3>
-            <p style="text-align: center;">floe | version 1.2.0</p>
-            <p style="text-align: center;">(name suggestions welcome!)</p>
-            <p style="font-weight: 700;">Probability-ranked word study tool</p>
+            <h3>ABOUT</h3>
+            <p style="text-align: center; font-weight: 700;">floe | version 1.2.1</p>
+            <p style="text-align: center; font-weight: 700;">Probability-ranked word study tool</p>
             <p>Current features:<br>
                 • Words: 3-9 letters, CSW24<br>
                 • PREV/NEXT/RANDOM navigation<br>
                 • Jump by rank or word<br>
                 • Anagram clusters<br>
                 • Front/back truncation indicators<br>
-                • Auto-scroll mode (5s interval)<br>
+                • Auto-scroll mode<br>
                 • Autosaves your place per word length<br>
-                • Spelling reader (speak)</p>
+                • TTS reader (speak)</p>
             <p style="text-align: center;">Created by William Kang<br>
                 Aided by DeepSeek-V3.2</p>
             <p>This is free software under the GNU GPLv3.<br>
@@ -530,11 +511,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
         </div>
     </div>
 
-    <div id="changeLogModal" class="modal">
+    <div id="changeLogModal" class="modal-sub">
         <div class="modal-content">
-            <h3>Change Log</h3>
+            <h3>CHANGE LOG</h3>
+            <p style="text-align: center;">version 1.2.1</p>
+            <p>• added options for auto-scroll and speech rates<br>
+                • TTS changes: now pronounces word, then spells</p>
+            <hr>
             <p style="text-align: center;">version 1.2.0</p>
-            <p>• added spelling reader (speak)</p>
+            <p>• added TTS reader (speak)</p>
             <hr>
             <p style="text-align: center;">version 1.1.1</p>
             <p>• applied GNU GPLv3 license<br>
@@ -559,15 +544,41 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
         </div>
     </div>
 
-    <div id="logModal" class="modal">
+    <div id="logModal" class="modal-sub">
         <div class="modal-content">
-            <h3>Debug Logs</h3>
+            <h3>DEBUG</h3>
             <div id="logContent"
                 style="background: #2c4a2a; color: #fff7e8; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 0.8rem; max-height: 300px; overflow-y: auto; text-align: left; white-space: pre-wrap;">
             </div>
             <div style="display: flex; gap: 8px; margin-top: 16px;">
                 <button id="clearLogsBtn">CLEAR</button>
                 <button id="closeLogBtn">CLOSE</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="optionsModal" class="modal">
+        <div class="modal-content">
+            <h3>OPTIONS</h3>
+            <div style="text-align: center;">
+                <label>AUTO SCROLL RATE (in seconds)</label>
+                <input type="number" id="scrollRateInput" class="options-input" value="5" step="1" min="5" max="10">
+                <br><br>
+                <label>SPEECH SPEED (1=slow, 5=fast)</label>
+                <input type="number" id="speakRateInput" class="options-input" value="3" step="1" min="1" max="5">
+            </div>
+            <br>
+            <hr>
+            <div style="display: flex; gap: 8px; margin-top: 16px;">
+                <button class="change-log-btn" id="changeLogBtn">CHANGE LOG</button>
+                <button class="about-btn" id="aboutBtn">ABOUT</button>
+                <!--button class="debug-btn" id="debugBtn">DEBUG</button-->
+            </div>
+            <br>
+            <hr>
+            <div style="display: flex; gap: 8px; margin-top: 16px;">
+                <button class="about-btn" id="saveOptionsBtn">SAVE</button>
+                <button class="about-btn" id="closeOptionsBtn">CLOSE</button>
             </div>
         </div>
     </div>
@@ -618,6 +629,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
         let ttsAvailable = false;
         let TextToSpeech = null;
 
+        let speakRate = 0.6;
+        let scrollRate = 5 * 1000; // seconds * 1000;
+        //let debugMode = true;
+        let debugMode = false;
+
         const STORAGE_KEY = 'scrabbleLazyState';
 
         // Auto-scroll variables
@@ -634,6 +650,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
         const rankJumpInput = document.getElementById("rankJumpInput");
         const wordJumpInput = document.getElementById("wordJumpInput");
         const speakBtn = document.getElementById("speakBtn");
+        const speakRateInput = document.getElementById("speakRateInput");
+        const scrollRateInput = document.getElementById("scrollRateInput");
 
         function saveState() {
             const masterState = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
@@ -647,6 +665,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             };
             masterState.lastActiveLength = currentLength;
             masterState.lastSpeakMode = speakMode;
+            masterState.lastSpeakRate = speakRate;
+            masterState.lastScrollRate = scrollRate;
             //addLog("speakMode saved: " + speakMode);
 
             localStorage.setItem(STORAGE_KEY, JSON.stringify(masterState));
@@ -669,7 +689,22 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
             if (masterState.lastSpeakMode !== undefined) {
                 speakMode = masterState.lastSpeakMode;
-                speakBtn.style.background = speakMode ? "#3b6e2a" : "#eb3e3e";
+                speakBtn.style.background = speakMode ? "#3b6e2a" : "#606060";
+            }
+
+            if (masterState.lastSpeakRate !== undefined) {
+                speakRate = masterState.lastSpeakRate;
+
+                if (speakRate <= 0.4) speakRateInput.value = 1;
+                else if (speakRate <= 0.5) speakRateInput.value = 2;
+                else if (speakRate <= 0.6) speakRateInput.value = 3;
+                else if (speakRate <= 0.7) speakRateInput.value = 4;
+                else speakRateInput.value = 5;
+            }
+
+            if (masterState.lastScrollRate !== undefined) {
+                scrollRate = masterState.lastScrollRate;
+                scrollRateInput.value = scrollRate / 1000;
             }
 
             const saved = masterState[currentLength];
@@ -794,7 +829,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             autoInterval = setInterval(() => {
                 if (direction === 'next') nextWord();
                 else prevWord();
-            }, 5000);
+            }, scrollRate);
         }
 
         async function refreshWord() {
@@ -998,7 +1033,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             if (speakMode === true) {
                 speakBtn.style.background = "#3b6e2a";
             } else {
-                speakBtn.style.background = "#eb3e3e";
+                speakBtn.style.background = "#606060";
             }
 
             document.getElementById("prevBtn").addEventListener("click", () => prevWord());
@@ -1007,9 +1042,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             document.getElementById("jumpBtn").addEventListener("click", () => smartJump());
             document.getElementById("rangeBtn").addEventListener("click", () => updateFilters());
 
-            document.getElementById('debugBtn').addEventListener('click', showLogModal);
+            //document.getElementById('debugBtn').addEventListener('click', showLogModal);
             document.getElementById('closeLogBtn').addEventListener('click', closeLogModal);
             document.getElementById('clearLogsBtn').addEventListener('click', clearLogs);
+
+            document.getElementById('optionsBtn').addEventListener('click', showOptionsModal);
+            document.getElementById('saveOptionsBtn').addEventListener('click', saveOptions);
+            document.getElementById('closeOptionsBtn').addEventListener('click', closeOptionsModal);
 
             document.getElementById("autoPrevBtn").addEventListener("click", () => {
                 if (autoDirection === 'prev') stopAuto();
@@ -1044,7 +1083,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             document.getElementById("speakBtn").addEventListener("click", async () => {
                 if (speakMode === true) {
                     speakMode = false;
-                    speakBtn.style.background = "#eb3e3e";
+                    speakBtn.style.background = "#606060";
                     if (TextToSpeech && TextToSpeech.stop) {
                         await TextToSpeech.stop();
                     } else {
@@ -1253,7 +1292,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
                         await TextToSpeech.initialize();
                         addLog('TTS engine initialized successfully');
 
-                        // *** ADD THIS SMALL DELAY HERE ***
+                        // *** CRITICAL!!! ADD THIS SMALL DELAY HERE ***
                         // Give the native engine a moment to fully initialize.
                         await new Promise(resolve => setTimeout(resolve, 200));
                         // *********************************
@@ -1263,6 +1302,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
                     } catch (e) {
                         addLog(`TTS init error: ${e.message}`);
                         ttsReady = false;
+                        speakBtn.disabled = true;
+                        speakMode = false;
+                        saveState();
                     }
                     ttsAvailable = true;
                     return;
@@ -1280,6 +1322,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
                     addLog(`TTS import failed: ${e.message}`);
                     ttsAvailable = false;
                     ttsReady = false;
+                    speakBtn.disabled = true;
+                    speakMode = false;
+                    saveState();
                 }
             } else {
                 addLog('Not in Capacitor native environment');
@@ -1299,36 +1344,46 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
                 return;
             }
 
+            const speechWord = word.toLowerCase();
             const spelling = word.split('').join(' ');
+            const speechString = speechWord + ", " + spelling;
 
             if (ttsAvailable && TextToSpeech) {
                 try {
                     await TextToSpeech.speak({
-                        text: spelling,
-                        rate: 0.7,
+                        text: speechString,
+                        rate: speakRate,
                         language: 'en-US'
                     });
                     addLog(`Speaking: ${spelling}`);
                 } catch (e) {
                     addLog(`TTS error: ${e.message}`);
+                    ttsAvailable = false;
+                    ttsReady = false;
+                    speakMode = false;
+                    saveState();
                 }
             }
         }
 
         function addLog(message, type = 'info') {
-            const timestamp = new Date().toLocaleTimeString();
-            const entry = `[${timestamp}] ${message}`;
-            logEntries.push(entry);
+            if (debugMode === true) {
+                const timestamp = new Date().toLocaleTimeString();
+                const entry = `[${timestamp}] ${message}`;
+                logEntries.push(entry);
 
-            // Update modal if open (without triggering any console logs)
-            const logContent = document.getElementById('logContent');
-            if (logContent && logContent.isConnected && logContent.innerText !== undefined) {
-                // Direct DOM manipulation without any logging
-                const currentText = logEntries.join('\n');
-                if (logContent.innerText !== currentText) {
-                    logContent.innerText = currentText;
-                    logContent.scrollTop = logContent.scrollHeight;
+                // Update modal if open (without triggering any console logs)
+                const logContent = document.getElementById('logContent');
+                if (logContent && logContent.isConnected && logContent.innerText !== undefined) {
+                    // Direct DOM manipulation without any logging
+                    const currentText = logEntries.join('\n');
+                    if (logContent.innerText !== currentText) {
+                        logContent.innerText = currentText;
+                        logContent.scrollTop = logContent.scrollHeight;
+                    }
                 }
+            } else {
+                // do nothing if debugmode == false;
             }
         }
 
@@ -1355,6 +1410,39 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             const logContent = document.getElementById('logContent');
             if (logContent) logContent.innerText = '';
             addLog('Logs cleared');
+        }
+
+        function showOptionsModal() {
+            document.getElementById('optionsModal').style.display = 'flex';
+        }
+
+        function closeOptionsModal() {
+            document.getElementById('optionsModal').style.display = 'none';
+        }
+
+        function saveOptions() {
+            const speakRateSaved = speakRateInput.value;
+            const scrollRateSaved = scrollRateInput.value;
+
+            switch (parseInt(speakRateSaved)) {
+                case 1: speakRate = 0.4; break;
+                case 2: speakRate = 0.5; break;
+                case 3: speakRate = 0.6; break;
+                case 4: speakRate = 0.7; break;
+                case 5: speakRate = 0.8; break;
+                default: speakRate = 0.6; break;
+            }
+
+            scrollRate = parseInt(scrollRateSaved) * 1000;
+
+            addLog("speakRate set to: " + speakRate);
+            addLog("scrollRate set to: " + scrollRate);
+
+            if (autoDirection !== null) {
+                startAuto(autoDirection);
+            }
+
+            saveState();
         }
 
         init();
