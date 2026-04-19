@@ -23,6 +23,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+2s.txt
 3s.txt
 4s.txt
 5s.txt
@@ -30,6 +31,7 @@ dist-ssr
 7s.txt
 8s.txt
 9s.txt
+10s.txt
 *.apk
 
 capacitor.config.json

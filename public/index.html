@@ -61,7 +61,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             font-weight: 800;
             font-family: 'Roboto Mono', monospace;
             background: #fff7e8;
-            padding: 24px 8px;
+            padding: 8px;
             border-radius: 16px;
             margin: 8px 0;
             letter-spacing: 2px;
@@ -77,10 +77,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             font-weight: 800;
             font-family: 'Roboto Mono', monospace;
             background: #fff7e8;
-            padding: 24px 8px;
+            padding: 8px;
             border-radius: 16px;
             margin: 8px 0;
-            letter-spacing: 2px;
             color: #2c4a2a;
             border: 1px solid #e0cf9a;
             word-break: break-word;
@@ -94,16 +93,56 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             font-weight: 800;
             font-family: 'Roboto Mono', monospace;
             background: #fff7e8;
-            padding: 24px 8px;
+            padding: 8px;
             border-radius: 16px;
             margin: 8px 0;
-            letter-spacing: 2px;
             color: #2c4a2a;
             border: 1px solid #e0cf9a;
             word-break: break-word;
             text-align: center;
             white-space: pre;
             width: 15%;
+        }
+
+        .hook-row {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin: 0;
+        }
+
+        .fh-indicator,
+        .bh-indicator {
+            font-size: clamp(0.6rem, 4vw, 1.2rem);
+            font-weight: 800;
+            font-family: 'Roboto Mono', monospace;
+            padding: 8px 0;
+            margin: 8px 0;
+            color: #2c4a2a;
+            white-space: pre;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            flex: 1;
+            width: 45%;
+        }
+
+        .fh-indicator {
+            text-align: right;
+        }
+
+        .bh-indicator {
+            text-align: left;
+        }
+
+        .h-signs {
+            font-size: clamp(0.6rem, 4vw, 1.2rem);
+            font-weight: 800;
+            font-family: 'Roboto Mono', monospace;
+            background: #fff7e8;
+            padding: 8px 0;
+            margin: 8px;
+            color: #2c4a2a;
+            text-align: center;
         }
 
         .rank {
@@ -436,6 +475,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             <div class="bt-indicator" id="btIndicator"> </div>
         </div>
 
+        <div class="hook-row">
+            <div class="fh-indicator" id="fhIndicator"> </div>
+            <div class="h-signs" id="hSign">&lt;|&gt;</div>
+            <div class="bh-indicator" id="bhIndicator"> </div>
+        </div>
+
         <div class="anagram-indicator" id="anagramIndicator"></div>
         <div class="anagram-list" id="anagramList"></div>
 
@@ -490,13 +535,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
     <div id="aboutModal" class="modal-sub">
         <div class="modal-content">
             <h3>ABOUT</h3>
-            <p style="text-align: center; font-weight: 700;">floe | version 1.2.1</p>
+            <p style="text-align: center; font-weight: 700;">floe | version 1.2.2</p>
             <p style="text-align: center; font-weight: 700;">Probability-ranked word study tool</p>
             <p>Current features:<br>
                 • Words: 3-9 letters, CSW24<br>
                 • PREV/NEXT/RANDOM navigation<br>
                 • Jump by rank or word<br>
                 • Anagram clusters<br>
+                • Front/back hook indicators<br>
                 • Front/back truncation indicators<br>
                 • Auto-scroll mode<br>
                 • Autosaves your place per word length<br>
@@ -514,6 +560,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
     <div id="changeLogModal" class="modal-sub">
         <div class="modal-content">
             <h3>CHANGE LOG</h3>
+            <p style="text-align: center;">version 1.2.2</p>
+            <p>• added front/back hooks</p>
             <p style="text-align: center;">version 1.2.1</p>
             <p>• added options for auto-scroll and speech rates<br>
                 • TTS changes: now pronounces word, then spells</p>
@@ -585,33 +633,39 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
     <script>
         const WORD_FILES = {
+            2: "2s.txt",
             3: "3s.txt",
             4: "4s.txt",
             5: "5s.txt",
             6: "6s.txt",
             7: "7s.txt",
             8: "8s.txt",
-            9: "9s.txt"
+            9: "9s.txt",
+            10: "10s.txt"
         };
 
         let wordsByLen = {
+            2: [],
             3: [],
             4: [],
             5: [],
             6: [],
             7: [],
             8: [],
-            9: []
+            9: [],
+            10: []
         };
 
         let wordsByLenSet = {
+            2: new Set(),
             3: new Set(),
             4: new Set(),
             5: new Set(),
             6: new Set(),
             7: new Set(),
             8: new Set(),
-            9: new Set()
+            9: new Set(),
+            10: new Set()
         };
 
         let loadedCount = 0;
@@ -796,7 +850,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             const backCut = currentWord.slice(0, -1);
             const targetLength = currentLength - 1;
 
-            if (targetLength >= 3 && targetLength <= 9 && wordsByLen[targetLength]) {
+            if (targetLength >= 2 && targetLength <= 10 && wordsByLen[targetLength]) {
                 const targetList = wordsByLen[targetLength];
                 const frontValid = wordsByLenSet[targetLength].has(frontCut);
                 const backValid = wordsByLenSet[targetLength].has(backCut);
@@ -807,6 +861,39 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
                 document.getElementById("ftIndicator").innerText = " ";
                 document.getElementById("btIndicator").innerText = " ";
             }
+        }
+
+        function getHooks(word, currentLength) {
+            const nextLength = currentLength + 1;
+            const nextList = wordsByLen[nextLength];
+            if (!nextList || nextList.length === 0) {
+                return { front: '', back: '' };
+            }
+
+            const nextSet = wordsByLenSet[nextLength];
+            const frontHooks = [];
+            const backHooks = [];
+
+            // Front hooks: letter + word
+            for (let i = 65; i <= 90; i++) { // A-Z
+                const letter = String.fromCharCode(i);
+                if (nextSet.has(letter + word)) {
+                    frontHooks.push(letter.toLowerCase());
+                }
+            }
+
+            // Back hooks: word + letter
+            for (let i = 65; i <= 90; i++) {
+                const letter = String.fromCharCode(i);
+                if (nextSet.has(word + letter)) {
+                    backHooks.push(letter.toLowerCase());
+                }
+            }
+
+            return {
+                front: frontHooks.join(''),
+                back: backHooks.join('')
+            };
         }
 
         function stopAuto() {
@@ -839,6 +926,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
             rankJumpInput.value = rank;
             updateAnagramIndicator();
             updateTruncationIndicators();
+
+            const hooks = getHooks(word, currentLength);
+            document.getElementById("fhIndicator").innerText = hooks.front || ' ';
+            document.getElementById("bhIndicator").innerText = hooks.back || ' ';
+
             await speakSpelling(word);
         }
 
